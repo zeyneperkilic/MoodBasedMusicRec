@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import requests
+import random
 
 app = Flask(__name__)
 
@@ -31,14 +32,14 @@ def mood_map(color):
 
     response = requests.get(f"{API_URL}/clusters/{cluster_id}")
     songs = response.json().get("songs", []) if response.status_code == 200 else []
-
+    random_songs = random.sample(songs, min(500, len(songs)))
     return render_template(
         "mood_map.html",
         mood_name=color.capitalize(),
         mood_color=color,
         cluster_id=cluster_id,
-        songs=songs,
-        all_songs=songs
+        songs=random_songs,
+        all_songs=random_songs
     )
 
 @app.route('/recommend', methods=['GET'])
